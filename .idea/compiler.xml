@@ -9,5 +9,8 @@
         <module name="knit241_template" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="csit241" target="11" />
+    </bytecodeTargetLevel>
   </component>
 </project>

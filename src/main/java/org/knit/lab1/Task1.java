@@ -1,5 +1,6 @@
 package org.knit.lab1;
 
+
 /***
  * Задача 1
  * Вывести на экран числа от 1 до 100 через запятую, переходя на новую строку каждые 10 чисел
@@ -20,6 +21,7 @@ package org.knit.lab1;
  ***/
 public class Task1 {
     public void execute() {
+
         for (int i = 1; i <= 100; i++) {
             System.out.print(i);
             if (i % 10 != 0) {
