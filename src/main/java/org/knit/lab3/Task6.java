@@ -6,172 +6,143 @@ public class Task6 {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        Player warrior = new Warrior("Some Ork", 52, 100, true, 25, 10, 15, 40);
-        Player mage = new Mage("Some Mage", 30, 80, true, 50, 10, 15, 15);
-        Player priest = new Priest("Some Healer", 60, 60, true, 25, 0, 0, 25);
+        Warrior warrior = new Warrior("Some Ork", 0, 0);
+        Mage mage = new Mage("Some Mage", 10, 10);
+        Priest priest = new Priest("Some Healer", -10, -10);
 
-        System.out.println("До атаки: ");
-        System.out.println(warrior.currentHealth);
+        mage.movement(100, 200);
+        warrior.movement(10, 3);
+        warrior.displayInfo();
 
-        mage.attack(warrior);
-        System.out.println("После атаки: ");
-        System.out.println(warrior.currentHealth);
-
-        priest.heal(warrior);
-
-        System.out.println("После лечения: ");
-        System.out.println(warrior.currentHealth);
-
-        warrior.attack(mage);
+//        mage.attack(warrior);
+//
+//        warrior.attack(mage);
 //
 //        mage.castSpell(warrior);
-
-
+//
+//        priest.heal(warrior);
     }
 }
 
 abstract class Player {
     protected String name;
-    protected double currentHealth;
-    protected double maxHealth;
+    protected int currentHealth;
+    protected int maxHealth;
     protected boolean isALife;
     protected double damage;
     protected int axis_X;
     protected int axis_Y;
     protected double protection;
+    protected int energy;
 
+    public void displayInfo() {
+        System.out.println("=".repeat(250));
+        System.out.print(name + ":");
+        System.out.print(" Живой: " + (isALife ? "Да" : "Нет"));
+        System.out.print("; Текущее здоровье: " + currentHealth + "/" + maxHealth);
+        System.out.print("; Урон: " + damage);
+        System.out.print("; Защита: " + protection);
+        System.out.print("; Энергия: " + energy + "/100");
+        System.out.println("; Координаты: X = " + axis_X + ", Y = " + axis_Y);
+        System.out.println("=".repeat(250));
+    }
 
-    public abstract void addHealth(int healPower);
+    protected void attack(Player player) {
+        int r = Math.abs(axis_X - player.axis_X) + Math.abs(axis_Y - player.axis_Y);
+        if (r > 5) {
+            System.out.println("Цель слишком далеко!");
+        } else {
+            if (energy < 30) {
+                System.out.println("Недостаточно энергии");
+            } else {
+                System.out.println(this.name + " атакует " + player.name);
+                energy -= 30;
+                player.decreaseHealth(this.damage);
+            }
+        }
+    }
 
-    public abstract void attack(Player player);
+    protected void addHealth(int healPower) {
+        currentHealth = Math.min(this.maxHealth, currentHealth + healPower);
+        System.out.println("Текущее здоровье " + this.name + " = " + currentHealth);
+    }
 
-    public abstract void decreaseHealth(double value);
+    protected void decreaseHealth(double value) {
+        this.currentHealth -= Math.max(value - this.protection, 0);
+        System.out.println("Текущее здоровье " + this.name + " = " + currentHealth);
+        if (currentHealth < 0) {
+            isALife = false;
+            System.out.println(this.name + " мёртв");
+        }
+    }
 
-    public abstract void heal(Player warrior);
+    protected void movement(int x, int y) {
+        int r = Math.abs(axis_X - x) + Math.abs(axis_Y - y);
+        if (r > energy) {
+            System.out.println("Недостаточно энергии");
+        } else {
+            axis_X = x;
+            axis_Y = y;
+            energy -= r;
+            System.out.println(energy);
+        }
+    }
 }
 
 class Mage extends Player {
-    public Mage(String name, double currentHealth, double maxHealth, boolean isALife, double damage, int axis_X, int axis_Y, double protection) {
+    public Mage(String name, int axis_X, int axis_Y) {
         this.name = name;
-        this.currentHealth = currentHealth;
-        this.maxHealth = maxHealth;
-        this.isALife = isALife;
-        this.damage = damage;
+        this.currentHealth = 80;
+        this.maxHealth = 80;
+        this.isALife = true;
+        this.damage = 50;
         this.axis_X = axis_X;
         this.axis_Y = axis_Y;
-        this.protection = protection;
+        this.protection = 15;
+        this.energy = 100;
     }
 
-    @Override
-    public void attack(Player player) {
-        System.out.println(this.name + " атакует " + player.name);
-        player.decreaseHealth(this.damage);
-    }
-
-    @Override
-    public void decreaseHealth(double value) {
-        this.currentHealth -= Math.max(value - this.protection, 0);
-        System.out.println("Текущее здоровье " + this.name + " = " + currentHealth);
-        if (currentHealth < 0) {
-            isALife = false;
-            System.out.println(this.name + " мёртв");
+    public void castSpell(Player player) {
+        int r = Math.abs(axis_X - player.axis_X) + Math.abs(axis_Y - player.axis_Y);
+        if (r > 20) {
+            System.out.println("Цель слишком далеко!");
+        } else {
+            if (energy < 30) {
+                System.out.println("Недостаточно энергии");
+            } else {
+                System.out.println(this.name + " Накладывает заклинание на " + player.name);
+                this.energy -= 30;
+                player.decreaseHealth(50);
+            }
         }
     }
-
-    @Override
-    public void addHealth(int healPower) {
-        currentHealth = Math.min(this.maxHealth, currentHealth + healPower);
-        System.out.println("Текущее здоровье " + this.name + " = " + currentHealth);
-    }
-
-    @Override
-    public void heal(Player player) {
-        System.out.println(this.name + " Лечит " + player.name);
-        player.addHealth(10);
-    }
-
 }
 
 class Warrior extends Player {
-
-    public Warrior(String name, double currentHealth, double maxHealth, boolean isALife, double damage, int axis_X, int axis_Y, double protection) {
+    public Warrior(String name, int axis_X, int axis_Y) {
         this.name = name;
-        this.currentHealth = currentHealth;
-        this.maxHealth = maxHealth;
-        this.isALife = isALife;
-        this.damage = damage;
+        this.currentHealth = 52;
+        this.maxHealth = 100;
+        this.isALife = true;
+        this.damage = 25;
         this.axis_X = axis_X;
         this.axis_Y = axis_Y;
-        this.protection = protection;
+        this.protection = 40;
+        this.energy = 100;
     }
-
-    @Override
-    public void heal(Player player) {
-        System.out.println(this.name + " Лечит " + player.name);
-        player.addHealth(5);
-    }
-
-    @Override
-    public void addHealth(int healPower) {
-        currentHealth = Math.min(this.maxHealth, currentHealth + healPower);
-        System.out.println("Текущее здоровье " + this.name + " = " + currentHealth);
-    }
-
-    @Override
-    public void attack(Player player) {
-        System.out.println(this.name + " атакует " + player.name);
-        player.decreaseHealth(this.damage);
-    }
-
-
-    @Override
-    public void decreaseHealth(double value) {
-        int additionalDefence = 5;
-        this.currentHealth -= Math.max(value - additionalDefence - this.protection, 0);
-        System.out.println("Текущее здоровье " + this.name + " = " + currentHealth);
-        if (currentHealth < 0) {
-            isALife = false;
-            System.out.println(this.name + " мёртв");
-        }
-    }
-
-
 }
 
 class Priest extends Player {
-    public Priest(String name, double currentHealth, double maxHealth, boolean isALife, double damage, int axis_X, int axis_Y, double protection) {
+    public Priest(String name, int axis_X, int axis_Y) {
         this.name = name;
-        this.currentHealth = currentHealth;
-        this.maxHealth = maxHealth;
-        this.isALife = isALife;
-        this.damage = damage;
+        this.currentHealth = 60;
+        this.maxHealth = 60;
+        this.isALife = true;
+        this.damage = 25;
         this.axis_X = axis_X;
         this.axis_Y = axis_Y;
-        this.protection = protection;
-    }
-
-
-    @Override
-    public void addHealth(int healPower) {
-        currentHealth = Math.min(this.maxHealth, currentHealth + healPower);
-        System.out.println("Текущее здоровье " + this.name + " = " + currentHealth);
-    }
-
-    @Override
-    public void attack(Player player) {
-        System.out.println(this.name + " атакует " + player.name);
-        player.decreaseHealth(this.damage);
-    }
-
-
-    @Override
-    public void decreaseHealth(double value) {
-        this.currentHealth -= Math.max(value - this.protection, 0);
-        System.out.println("Текущее здоровье " + this.name + " = " + currentHealth);
-        if (currentHealth < 0) {
-            isALife = false;
-            System.out.println(this.name + " мёртв");
-        }
+        this.protection = 25;
+        this.energy = 100;
     }
 
     public void heal(Player player) {
