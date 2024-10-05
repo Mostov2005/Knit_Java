@@ -6,13 +6,34 @@ public class Task6 {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        Warrior warrior = new Warrior("Some Ork", 0, 0);
-        Mage mage = new Mage("Some Mage", 10, 10);
-        Priest priest = new Priest("Some Healer", -10, -10);
+        System.out.println("Правила игры:");
+        System.out.println("У каждого игрока есть три персонажа: Орк, Маг, Священник.");
+        System.out.println("Характеристики каждого персонажа индивидуальны, например, у Орка больше всео здоровья.");
+        System.out.println("Каждый персонаж умеет передвигаться и атаковать.");
+        System.out.println("Для выполнения каждого действия, персонажу нужна энергия.");
+        System.out.println("За один ход можно управлять только одним персонажем.");
+        System.out.println("После завершения хода игрока у каждого его персонажа восполняется энергия.");
+        System.out.println("Цель игры - убить всех вражеских перонажей");
 
-        mage.movement(100, 200);
-        warrior.movement(10, 3);
-        warrior.displayInfo();
+
+        Warrior warrior1 = new Warrior("Орк игрока 1", 0, 0);
+        Mage mage1 = new Mage("Маг игрока 1", 100, 100);
+        Priest priest1 = new Priest("Священник игрока 1", -10, -10);
+
+        Warrior warrior2 = new Warrior("Орк игрока 2", 0, 0);
+        Mage mage2 = new Mage("Маг игрока 2", 100, 100);
+        Priest priest2 = new Priest("Священник игрока 2", -10, -10);
+
+        String[] сharacters = {warrior1, mage1, priest1, warrior2, mage2, priest2};
+
+        public static void infoPers (String[]array){
+            System.out.println("sd");
+        }
+
+//        warrior.displayInfo();
+//        mage.displayInfo();
+//        warrior.attack(mage);
+//        mage.movement(100, 100);
 
 //        mage.attack(warrior);
 //
@@ -29,10 +50,10 @@ abstract class Player {
     protected int currentHealth;
     protected int maxHealth;
     protected boolean isALife;
-    protected double damage;
+    protected int damage;
     protected int axis_X;
     protected int axis_Y;
-    protected double protection;
+    protected int protection;
     protected int energy;
 
     public void displayInfo() {
@@ -67,8 +88,8 @@ abstract class Player {
         System.out.println("Текущее здоровье " + this.name + " = " + currentHealth);
     }
 
-    protected void decreaseHealth(double value) {
-        this.currentHealth -= Math.max(value - this.protection, 0);
+    protected void decreaseHealth(int value) {
+        this.currentHealth -= Math.max(value - protection, 0);
         System.out.println("Текущее здоровье " + this.name + " = " + currentHealth);
         if (currentHealth < 0) {
             isALife = false;
@@ -79,13 +100,17 @@ abstract class Player {
     protected void movement(int x, int y) {
         int r = Math.abs(axis_X - x) + Math.abs(axis_Y - y);
         if (r > energy) {
-            System.out.println("Недостаточно энергии");
+            System.out.println("Недостаточно энергии!");
         } else {
             axis_X = x;
             axis_Y = y;
             energy -= r;
-            System.out.println(energy);
+            System.out.println(name + " Передвигается на: X = " + axis_X + ",Y = " + axis_Y);
         }
+    }
+
+    protected void addEnergy() {
+        energy += 20;
     }
 }
 
@@ -99,7 +124,7 @@ class Mage extends Player {
         this.axis_X = axis_X;
         this.axis_Y = axis_Y;
         this.protection = 15;
-        this.energy = 100;
+        this.energy = 30;
     }
 
     public void castSpell(Player player) {
@@ -128,7 +153,7 @@ class Warrior extends Player {
         this.axis_X = axis_X;
         this.axis_Y = axis_Y;
         this.protection = 40;
-        this.energy = 100;
+        this.energy = 30;
     }
 }
 
@@ -142,11 +167,13 @@ class Priest extends Player {
         this.axis_X = axis_X;
         this.axis_Y = axis_Y;
         this.protection = 25;
-        this.energy = 100;
+        this.energy = 30;
     }
 
     public void heal(Player player) {
         System.out.println(this.name + " Лечит " + player.name);
+        this.energy -= 30;
         player.addHealth(30);
+
     }
 }
