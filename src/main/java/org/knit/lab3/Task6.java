@@ -24,11 +24,11 @@ public class Task6 {
         Mage mage2 = new Mage("Маг игрока 2", 100, 100);
         Priest priest2 = new Priest("Священник игрока 2", -10, -10);
 
-        String[] сharacters = {warrior1, mage1, priest1, warrior2, mage2, priest2};
-
-        public static void infoPers (String[]array){
-            System.out.println("sd");
-        }
+//        String[] сharacters = {warrior1, mage1, priest1, warrior2, mage2, priest2};
+//
+//        public static void infoPers (String[]array){
+//            System.out.println("sd");
+//        }
 
 //        warrior.displayInfo();
 //        mage.displayInfo();
