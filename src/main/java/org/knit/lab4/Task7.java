@@ -34,7 +34,7 @@ public class Task7 {
         System.out.println(statistic.toPrint());
 
         // Рандомное слово
-        System.out.println(statistic.getRandomWord()); // полиметилметакрилат
+        System.out.println("Рандомное слово: " + statistic.getRandomWord()); // полиметилметакрилат
 
         // Какие слова можно составить
         GameWords("кухня", words);
@@ -47,14 +47,14 @@ public class Task7 {
     }
 
     public static void GameWords(String word, String[] words) {
-        Map<Character, Integer> charCount = new HashMap<>();
+        Map<Character, Integer> charCount = new HashMap<>(); // Map для хранения частоты букв основного слова
         for (char c : word.toLowerCase().toCharArray()) {
             charCount.put(c, charCount.getOrDefault(c, 0) + 1);
         }
         System.out.println("Слова которые можно составить для " + word + ": ");
         for (String candidate : words) {
             if (candidate.length() <= word.length()) {
-                Map<Character, Integer> candidateCount = new HashMap<>();
+                Map<Character, Integer> candidateCount = new HashMap<>(); // Map для хранения частоты букв "кандидатов"
                 for (char c : candidate.toCharArray()) {
                     candidateCount.put(c, candidateCount.getOrDefault(c, 0) + 1);
                 }
@@ -74,7 +74,6 @@ public class Task7 {
                 }
             }
         }
-
     }
 }
 
