@@ -10,6 +10,7 @@ public abstract class Player {
     protected int axis_Y;
     protected int protection;
     protected int energy;
+    protected int maxEnergy;
 
     public void displayInfo() {
         System.out.print(name + ":");
@@ -51,18 +52,29 @@ public abstract class Player {
     }
 
     protected void move(int x, int y) {
+        // Проверяем, находятся ли новые координаты в пределах допустимого диапазона
+        if (x < -40 || x > 40 || y < -40 || y > 40) {
+            System.out.println("Невозможно переместить " + name + ". Координаты (" + x + ", " + y + ") выходят за границы карты.");
+            return; // Прекращаем выполнение метода, если координаты невалидны
+        }
+
+        // Рассчитываем расстояние для перемещения
         int r = Math.abs(axis_X - x) + Math.abs(axis_Y - y);
+
+        // Проверяем, достаточно ли энергии для перемещения
         if (r > energy) {
             System.out.println("Недостаточно энергии!");
         } else {
+            // Если энергии достаточно и координаты допустимы, перемещаем персонажа
             axis_X = x;
             axis_Y = y;
-            energy -= r;
-            System.out.println(name + " Передвигается на: X = " + axis_X + ",Y = " + axis_Y);
+            energy -= r; // Вычитаем затраченную энергию
+            System.out.println(name + " передвигается на: X = " + axis_X + ", Y = " + axis_Y);
         }
     }
 
+
     protected void addEnergy() {
-        energy += 20;
+        energy = Math.min(maxEnergy, energy + 20);
     }
 }

@@ -20,7 +20,7 @@ public class Task9 {
 
         //получает текущее время в миллисекундах
         long timeMillis = System.currentTimeMillis();
-        long timeAfterMinute = timeMillis + 60000;
+        long timeAfterMinute = timeMillis + 10000;
 
         int countWorld = 0;
         int countRightWorld = 0;
@@ -34,10 +34,9 @@ public class Task9 {
             String inputWord = scanner.next();
 
             System.out.println("Прошло " + ((System.currentTimeMillis() - timeMillis) / 1000) + " секунд.");
-
+            countSymbol += inputWord.length();
             if ((randomWord.equalsIgnoreCase(inputWord)) && (System.currentTimeMillis() <= timeAfterMinute)) {
                 countRightWorld++;
-                countSymbol += inputWord.length();
             }
         }
 

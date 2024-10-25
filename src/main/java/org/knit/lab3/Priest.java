@@ -9,14 +9,23 @@ class Priest extends Player {
         this.damage = 10;
         this.axis_X = axis_X;
         this.axis_Y = axis_Y;
-        this.protection = 5;
-        this.energy = 30;
+        this.protection = 0;
+        this.energy = 100;
+        this.maxEnergy = 100;
     }
 
     public void heal(Player player) {
-        System.out.println(this.name + " Лечит " + player.name);
-        this.energy -= 30;
-        player.addHealth(30);
-
+        int r = Math.abs(axis_X - player.axis_X) + Math.abs(axis_Y - player.axis_Y); // Вычисляем расстояние
+        if (r > 20) {  // Проверяем, не слишком ли далеко цель
+            System.out.println("Цель слишком далеко для исцеления!");
+        } else {
+            if (this.energy < 40) {  // Проверяем, достаточно ли энергии для лечения
+                System.out.println("Недостаточно энергии для лечения");
+            } else {
+                System.out.println(this.name + " Лечит " + player.name);
+                this.energy -= 40;  // Уменьшаем энергию
+                player.addHealth(20);  // Увеличиваем здоровье игрока
+            }
+        }
     }
 }

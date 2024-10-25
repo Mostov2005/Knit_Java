@@ -42,8 +42,8 @@ public class CharacterChart extends JFrame {
 
         // Установка фиксированных границ для осей
         XYPlot plot = chart.getXYPlot();
-        plot.getDomainAxis().setRange(-50, 50); // Устанавливаем диапазон оси X
-        plot.getRangeAxis().setRange(-50, 50);  // Устанавливаем диапазон оси Y
+        plot.getDomainAxis().setRange(-40, 40); // Устанавливаем диапазон оси X
+        plot.getRangeAxis().setRange(-40, 40);  // Устанавливаем диапазон оси Y
 
         // Установка цвета для серий
         plot.getRenderer().setSeriesPaint(0, Color.RED);  // Первая команда - красный

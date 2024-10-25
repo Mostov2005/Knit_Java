@@ -8,11 +8,15 @@ public class Game {
     private Scanner scanner;
     private boolean gameRunning = true; // Переменная для управления состоянием игры
     private int currentPlayer = 1; // Переменная, определяющая, чей ход (1 или 2)
+    private CharacterChart chart;
 
     public Game(Player[] player1Characters, Player[] player2Characters, Scanner scanner) {
         this.player1Characters = player1Characters;
         this.player2Characters = player2Characters;
         this.scanner = scanner;
+
+        chart = new CharacterChart(player1Characters, player2Characters); // Создаем график после инициализации персонажей
+        chart.display();
 
     }
 
@@ -20,8 +24,7 @@ public class Game {
     public void start() {
         System.out.println("Начало игры! Игрок 1 ходит первым.");
         while (gameRunning) {
-            CharacterChart chart = new CharacterChart(player1Characters, player2Characters);
-            chart.display();  // Отображаем график для первой команды
+            chart.updateChart(player1Characters, player2Characters);
             displayPlayerInfo(); // Отображение информации о персонажах
             Player[] currentTeam = (currentPlayer == 1) ? player1Characters : player2Characters; // Определяем текущую команду
             Player selectedCharacter = selectCharacter(currentTeam); // Выбор персонажа
@@ -29,7 +32,7 @@ public class Game {
             if (selectedCharacter != null) {
                 performActions(selectedCharacter, currentTeam); // Выполнение действий выбранного персонажа
             }
-            chart.updateChart(player1Characters, player2Characters);
+
             // Проверка на конец игры
             gameRunning = !isTeamDefeated(player1Characters) && !isTeamDefeated(player2Characters);
             restoreEnergy(currentTeam); // Восстановление энергии у персонажей текущей команды
@@ -42,16 +45,24 @@ public class Game {
     private Player selectCharacter(Player[] team) {
         Player selectedCharacter = null; // Переменная для хранения выбранного персонажа
         while (selectedCharacter == null) {
-            System.out.println("Выберите персонажа:");
+            System.out.println("Выберите персонажа (или введите 0 для отмены):");
             for (int i = 0; i < team.length; i++) {
                 // Отображение информации о персонажах команды
-                System.out.println((i + 1) + ". " + team[i].name + "; Энергия: " + team[i].energy + "; Здоровье: " + team[i].currentHealth);
+                System.out.println((i + 1) + ". " + team[i].name + "; Энергия: " + team[i].energy +
+                        "/" + team[i].maxEnergy + "; Здоровье: " + team[i].currentHealth + "/" + team[i].maxHealth);
             }
+
             // Проверка ввода числа от пользователя
             if (scanner.hasNextInt()) {
                 int choice = scanner.nextInt() - 1; // Получение выбора пользователя
+                if (choice == -1) {
+                    System.out.println("Вы отменили выбор персонажа.");
+                    return null; // Если выбрали 0, возвращаемся в главное меню выбора
+                }
                 if (choice >= 0 && choice < team.length) {
-                    selectedCharacter = team[choice]; // Установка выбранного персонажа
+                    // Подтверждение выбора
+                    selectedCharacter = team[choice]; // Устанавливаем выбранного персонажа
+                    System.out.println("Вы выбрали персонажа " + selectedCharacter.name + ".");
                 } else {
                     System.out.println("Неверный выбор, попробуйте снова.");
                     scanner.next();
@@ -67,21 +78,26 @@ public class Game {
     // Метод для выполнения действий выбранного персонажа
     private void performActions(Player character, Player[] team) {
         boolean characterTurn = true; // Переменная для управления ходом персонажа
+        boolean hasMoved = false; // Переменная, чтобы отслеживать, выполнял ли персонаж действия
+
         while (characterTurn && character.energy > 0) { // Пока у персонажа есть энергия
             System.out.println("Текущая энергия игрока " + character.name + ": " + character.energy);
             System.out.println("Выберите действие (или введите 0 для завершения хода):");
             System.out.println("1. Перемещение");
-            System.out.println("2. Атака (Нужно 30 энергии)");
+            System.out.println("2. Атака (Нужно 30 энергии и цель должна находиться не дальше 5)");
 
             // Если персонаж - маг или священник, показываем дополнительные действия
             if (character instanceof Mage) {
-                System.out.println("3. Наложить заклинание");
+                System.out.println("3. Наложить заклинание(Нужно 40 энергии, и цель должна находиться на расстоянии не дальше 15)");
             } else if (character instanceof Priest) {
-                System.out.println("3. Исцелить");
+                System.out.println("3. Исцелить (Нужно 40 энергии, и цель должна находиться на расстоянии не дальше 20)");
             }
 
             int action = scanner.hasNextInt() ? scanner.nextInt() : -1; // Получение действия от пользователя
-            if (action == 0) break; // Завершение хода
+            if (action == 0) {
+                System.out.println(character.name + " завершает ход.");
+                break; // Завершение хода
+            }
 
             switch (action) {
                 case 1: // Перемещение персонажа
@@ -89,17 +105,22 @@ public class Game {
                     int x = scanner.nextInt();
                     int y = scanner.nextInt();
                     character.move(x, y);
+                    chart.updateChart(player1Characters, player2Characters);
+                    hasMoved = true; // Помечаем, что персонаж выполнил действия
                     break;
 
                 case 2: // Атака
                     attackEnemy(character);
+                    hasMoved = true;
                     break;
 
                 case 3: // Дополнительный навык
                     if (character instanceof Mage) {
                         castSpell((Mage) character); // Если маг, вызываем заклинание
+                        hasMoved = true;
                     } else if (character instanceof Priest) {
                         healAlly((Priest) character); // Если священник, исцеляем союзника
+                        hasMoved = true;
                     }
                     break;
                 default:
@@ -107,7 +128,12 @@ public class Game {
                     scanner.next();
             }
         }
+
+        if (hasMoved) {
+            System.out.println(character.name + " уже выполнял действия и не может смениться.");
+        }
     }
+
 
     // Метод для атаки врага
     private void attackEnemy(Player attacker) {
@@ -143,7 +169,8 @@ public class Game {
     private Player selectTarget(Player[] team) {
         for (int i = 0; i < team.length; i++) {
             // Отображение информации о персонажах команды
-            System.out.println((i + 1) + ". " + team[i].name + "; Энергия: " + team[i].energy + "; Здоровье: " + team[i].currentHealth);
+            System.out.println((i + 1) + ". " + team[i].name + "; Энергия: " + team[i].energy +
+                    "/" + team[i].maxEnergy + "; Здоровье: " + team[i].currentHealth + "/" + team[i].maxHealth);
         }
         int choice = scanner.nextInt() - 1; // Получение выбора пользователя
         return (choice >= 0 && choice < team.length) ? team[choice] : null; // Возврат выбранной цели
