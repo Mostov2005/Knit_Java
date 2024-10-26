@@ -6,7 +6,7 @@ public class Task8 {
     public static void main(String[] args) {
         String[] names = {"книга", "ручка", "линейка", "пенал"};
         Random random = new Random();
-        ShopItem[] items = new ShopItem[100];
+        ShopItem[] items = new ShopItem[1000];
 
         // Генерация 100 объектов ShopItem
         for (int i = 0; i < items.length; i++) {
@@ -72,7 +72,7 @@ class ShopItem {
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
         ShopItem shopItem = (ShopItem) obj;
-        return Integer.compare(shopItem.price, price) == 0 && quantity == shopItem.getQuantity() && name.equals(shopItem.getName());
+        return shopItem.price == price && quantity == shopItem.getQuantity() && name.equals(shopItem.getName());
     }
 
     @Override

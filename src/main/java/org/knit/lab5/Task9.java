@@ -20,7 +20,7 @@ public class Task9 {
 
         //получает текущее время в миллисекундах
         long timeMillis = System.currentTimeMillis();
-        long timeAfterMinute = timeMillis + 10000;
+        long timeAfterMinute = timeMillis + 60000;
 
         int countWorld = 0;
         int countRightWorld = 0;
