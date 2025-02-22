@@ -15,16 +15,25 @@
     </properties>
 
     <dependencies>
-        <!-- Добавляем зависимость JFreeChart -->
         <dependency>
             <groupId>org.jfree</groupId>
             <artifactId>jfreechart</artifactId>
-            <version>1.5.3</version> <!-- проверьте на наличие более новой версии -->
+            <version>1.5.3</version>
         </dependency>
         <dependency>
             <groupId>org.jfree</groupId>
             <artifactId>jcommon</artifactId>
-            <version>1.0.24</version> <!-- добавьте эту зависимость -->
+            <version>1.0.24</version>
+        </dependency>
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>42.7.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.xerial</groupId>
+            <artifactId>sqlite-jdbc</artifactId>
+            <version>3.42.0.1</version>
         </dependency>
     </dependencies>
 
