@@ -1,4 +1,4 @@
-package org.knit.lab8;
+package org.knit.sem1.lab8;
 
 
 import java.io.*;
