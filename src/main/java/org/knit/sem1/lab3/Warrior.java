@@ -1,4 +1,4 @@
-package org.knit.lab3;
+package org.knit.sem1.lab3;
 
 class Warrior extends Player {
     public Warrior(String name, int axis_X, int axis_Y) {

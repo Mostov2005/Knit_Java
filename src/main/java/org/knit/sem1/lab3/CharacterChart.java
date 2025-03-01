@@ -1,4 +1,4 @@
-package org.knit.lab3;
+package org.knit.sem1.lab3;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;

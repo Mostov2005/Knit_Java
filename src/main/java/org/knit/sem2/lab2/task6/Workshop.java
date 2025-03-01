@@ -13,7 +13,7 @@ class Workshop { // Цех с тремя рабочими
         new Thread(() -> {
             try {
                 while (true) {
-                    Thread.sleep(2000); // Время на создание заготовки
+                    Thread.sleep(500); // Время на создание заготовки
                     System.out.println("Штамповщик: Заготовка " + partId + " создана");
                     stampingQueue.put(partId++); // Поток блокируется здесь, если очередь полна
                 }

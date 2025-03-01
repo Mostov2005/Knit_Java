@@ -1,4 +1,4 @@
-package org.knit.lab3;
+package org.knit.sem1.lab3;
 
 class Mage extends Player {
     public Mage(String name, int axis_X, int axis_Y) {

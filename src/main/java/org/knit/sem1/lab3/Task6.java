@@ -1,4 +1,4 @@
-package org.knit.lab3;
+package org.knit.sem1.lab3;
 
 import java.util.Scanner;
 
